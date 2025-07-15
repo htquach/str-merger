@@ -17,6 +17,7 @@ from .models import (
     TokenType
 )
 from .input_processor import InputProcessor
+from .word_tokenizer import WordTokenizer
 
 __version__ = "1.0.0"
 __all__ = [
@@ -28,5 +29,6 @@ __all__ = [
     "AlgorithmResult",
     "Operation",
     "TokenType",
-    "InputProcessor"
+    "InputProcessor",
+    "WordTokenizer"
 ]

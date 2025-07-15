@@ -56,7 +56,7 @@ python -m pytest
 ## Usage
 
 ```python
-from shortest_combined_string import InputProcessor, PreprocessedInput
+from shortest_combined_string import InputProcessor, WordTokenizer
 
 # Input preprocessing with validation
 processor = InputProcessor()
@@ -70,6 +70,23 @@ print(f"Had consecutive spaces: {result.has_consecutive_spaces}")
 # Processed inputs: 'hello world' + 'world test'  
 # Warnings: ['Consecutive spaces detected in s1 at position 5 (2 spaces)...']
 # Had consecutive spaces: True
+
+# Word tokenization for algorithm processing
+tokenizer = WordTokenizer()
+tokens1 = tokenizer.tokenize("this is a red vase")
+tokens2 = tokenizer.tokenize("his son freddy love vase")
+
+print(f"S1 words: {[token.word for token in tokens1]}")
+print(f"S2 words: {[token.word for token in tokens2]}")
+
+# Perfect reconstruction
+reconstructed = tokenizer.reconstruct_from_tokens(tokens1)
+print(f"Reconstructed: '{reconstructed}'")
+
+# Example output:
+# S1 words: ['this', 'is', 'a', 'red', 'vase']
+# S2 words: ['his', 'son', 'freddy', 'love', 'vase']
+# Reconstructed: 'this is a red vase'
 ```
 
 ## Algorithm Approach
@@ -106,6 +123,7 @@ python -m pytest tests/test_models.py -v
 
 - ✅ Core data models implemented
 - ✅ Input preprocessing with validation
+- ✅ Word tokenization with space preservation
 - ⏳ Dynamic programming algorithm (planned)
 - ⏳ Result validation (planned)
 - ⏳ CLI interface (planned)
@@ -137,6 +155,7 @@ shortest_combined_string/
 ├── __init__.py          # Package exports
 ├── models.py            # Core data structures
 ├── input_processor.py   # Input validation and preprocessing
+├── word_tokenizer.py    # Word boundary tokenization
 ├── algorithm.py         # DP implementation (planned)
 ├── validator.py         # Result validation (planned)
 └── cli.py               # Command-line interface (planned)
