@@ -1,0 +1,1 @@
+"""Test package for shortest combined string algorithm."""
