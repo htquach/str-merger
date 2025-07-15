@@ -56,12 +56,20 @@ python -m pytest
 ## Usage
 
 ```python
-from shortest_combined_string import AlgorithmResult, OptimizationMetrics
+from shortest_combined_string import InputProcessor, PreprocessedInput
 
-# Example usage will be available after implementation
-# result = find_shortest_combined_string("hello world", "world test")
-# print(f"Combined: {result.combined_string}")
-# print(f"Savings: {result.metrics.total_savings} characters")
+# Input preprocessing with validation
+processor = InputProcessor()
+result = processor.validate_and_preprocess("hello  world", "world  test")
+
+print(f"Processed inputs: '{result.s1}' + '{result.s2}'")
+print(f"Warnings: {result.warnings}")
+print(f"Had consecutive spaces: {result.has_consecutive_spaces}")
+
+# Example output:
+# Processed inputs: 'hello world' + 'world test'  
+# Warnings: ['Consecutive spaces detected in s1 at position 5 (2 spaces)...']
+# Had consecutive spaces: True
 ```
 
 ## Algorithm Approach
@@ -97,7 +105,7 @@ python -m pytest tests/test_models.py -v
 ## Development Status
 
 - ✅ Core data models implemented
-- ⏳ Input preprocessing (planned)
+- ✅ Input preprocessing with validation
 - ⏳ Dynamic programming algorithm (planned)
 - ⏳ Result validation (planned)
 - ⏳ CLI interface (planned)
@@ -128,7 +136,7 @@ The project follows a modular architecture:
 shortest_combined_string/
 ├── __init__.py          # Package exports
 ├── models.py            # Core data structures
-├── preprocessor.py      # Input validation (planned)
+├── input_processor.py   # Input validation and preprocessing
 ├── algorithm.py         # DP implementation (planned)
 ├── validator.py         # Result validation (planned)
 └── cli.py               # Command-line interface (planned)

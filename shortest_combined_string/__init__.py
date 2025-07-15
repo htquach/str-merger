@@ -16,6 +16,7 @@ from .models import (
     Operation,
     TokenType
 )
+from .input_processor import InputProcessor
 
 __version__ = "1.0.0"
 __all__ = [
@@ -26,5 +27,6 @@ __all__ = [
     "OptimizationMetrics",
     "AlgorithmResult",
     "Operation",
-    "TokenType"
+    "TokenType",
+    "InputProcessor"
 ]
