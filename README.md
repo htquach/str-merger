@@ -184,6 +184,7 @@ python -m pytest tests/test_models.py -v
 - ✅ Subsequence verification for output validation
 - ✅ Dynamic programming algorithm with basic optimization
 - ✅ Advanced character reuse optimizations (substring containment, prefix/suffix overlap, character interleaving)
+- ✅ Optimal path reconstruction with backtracking algorithm
 - ⏳ CLI interface (planned)
 
 ## Requirements
@@ -216,6 +217,7 @@ shortest_combined_string/
 ├── word_tokenizer.py        # Word boundary tokenization
 ├── subsequence_verifier.py  # Output validation and verification
 ├── dp_solver.py             # Dynamic programming algorithm implementation
+├── path_reconstructor.py    # Optimal path reconstruction with backtracking
 └── cli.py                   # Command-line interface (planned)
 ```
 

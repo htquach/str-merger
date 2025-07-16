@@ -114,11 +114,12 @@ class TestDPSolver:
         assert result.dp_table[0][1].length == 5  # "world"
         assert result.dp_table[1][1].length > 0  # Some combination
         
-        # Solution should contain both words
+        # Solution should contain both words as subsequences
         assert len(result.solution) > 0
         solution_content = "".join(token.content for token in result.solution)
-        assert "hello" in solution_content
-        assert "world" in solution_content
+        clean_content = solution_content.replace(" ", "")
+        assert self._is_subsequence("hello", clean_content)
+        assert self._is_subsequence("world", clean_content)
     
     def test_dp_table_initialization_with_spaces(self):
         """Test DP table initialization with tokens that have spaces."""
@@ -255,6 +256,23 @@ class TestDPSolver:
                     assert state.length >= result.dp_table[i-1][j].length
                 if j > 0:
                     assert state.length >= result.dp_table[i][j-1].length
+    
+    def _is_subsequence(self, s: str, t: str) -> bool:
+        """
+        Check if s is a subsequence of t.
+        
+        Args:
+            s: The potential subsequence
+            t: The target string
+            
+        Returns:
+            True if s is a subsequence of t
+        """
+        i = 0
+        for char in t:
+            if i < len(s) and char == s[i]:
+                i += 1
+        return i == len(s)
 
 
 class TestDPResult:

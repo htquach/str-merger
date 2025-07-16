@@ -1,63 +1,61 @@
 """
-Dynamic Programming solver for the Shortest Combined String algorithm.
+Path reconstruction for the Shortest Combined String algorithm.
 
-This module implements the core DP algorithm that finds the optimal way to combine
-two sequences of word tokens while minimizing the total length and preserving
-subsequence relationships.
+This module implements the PathReconstructor class that rebuilds the optimal solution
+from the DP table using backtracking algorithm to find the optimal character combination.
 """
 
-from typing import List, Optional
+from typing import List
 from .models import WordToken, DPState, Operation, CombinedToken, TokenType
-from .path_reconstructor import PathReconstructor
 
 
-class DPResult:
+class PathReconstructor:
     """
-    Result of the dynamic programming algorithm.
+    Reconstructs the optimal solution path from a DP table.
     
-    Attributes:
-        optimal_length: The minimum length achievable
-        dp_table: The complete DP table for debugging/analysis
-        solution: List of CombinedToken objects representing the solution
-    """
-    
-    def __init__(self, optimal_length: int, dp_table: List[List[DPState]], solution: List[CombinedToken]):
-        self.optimal_length = optimal_length
-        self.dp_table = dp_table
-        self.solution = solution
-
-
-class DPSolver:
-    """
-    Dynamic Programming solver for optimal string combination.
-    
-    This class implements a word-boundary aware DP algorithm that finds the shortest
-    way to combine two sequences of word tokens while preserving subsequence integrity.
+    This class implements a backtracking algorithm that traces through the DP table
+    to rebuild the sequence of operations that led to the optimal solution, generating
+    a sequence of CombinedToken objects that represent the final result.
     """
     
     def __init__(self):
-        """Initialize the DP solver."""
-        self.path_reconstructor = PathReconstructor()
+        """Initialize the PathReconstructor."""
+        pass
     
-    def solve(self, s1_tokens: List[WordToken], s2_tokens: List[WordToken]) -> DPResult:
+    def reconstruct_path(self, dp_table: List[List[DPState]], s1_tokens: List[WordToken], s2_tokens: List[WordToken]) -> List[CombinedToken]:
         """
-        Solve the shortest combined string problem using dynamic programming.
+        Reconstruct the optimal solution path from the DP table.
+        
+        Uses backtracking algorithm to trace through the DP table and generate
+        the sequence of CombinedToken objects that represent the optimal solution.
         
         Args:
+            dp_table: The filled DP table from the solver
             s1_tokens: Word tokens from the first string
             s2_tokens: Word tokens from the second string
             
         Returns:
-            DPResult containing the optimal solution
+            List of CombinedToken objects representing the optimal solution
             
         Raises:
-            TypeError: If inputs are not lists of WordToken objects
+            TypeError: If inputs are not of the expected types
+            ValueError: If DP table dimensions don't match token lists
         """
+        if not isinstance(dp_table, list):
+            raise TypeError("dp_table must be a list")
         if not isinstance(s1_tokens, list):
             raise TypeError("s1_tokens must be a list")
         if not isinstance(s2_tokens, list):
             raise TypeError("s2_tokens must be a list")
         
+        # Validate DP table structure
+        if len(dp_table) != len(s1_tokens) + 1:
+            raise ValueError(f"DP table rows ({len(dp_table)}) must equal s1_tokens length + 1 ({len(s1_tokens) + 1})")
+        
+        if dp_table and len(dp_table[0]) != len(s2_tokens) + 1:
+            raise ValueError(f"DP table columns ({len(dp_table[0])}) must equal s2_tokens length + 1 ({len(s2_tokens) + 1})")
+        
+        # Validate token types
         for token in s1_tokens:
             if not isinstance(token, WordToken):
                 raise TypeError("All s1_tokens must be WordToken objects")
@@ -66,135 +64,98 @@ class DPSolver:
             if not isinstance(token, WordToken):
                 raise TypeError("All s2_tokens must be WordToken objects")
         
-        # Initialize DP table
-        dp_table = self._initialize_dp_table(s1_tokens, s2_tokens)
+        # Validate DP table contents
+        for i, row in enumerate(dp_table):
+            if not isinstance(row, list):
+                raise TypeError(f"DP table row {i} must be a list")
+            for j, state in enumerate(row):
+                if not isinstance(state, DPState):
+                    raise TypeError(f"DP table entry [{i}][{j}] must be a DPState object")
         
-        # Fill DP table with optimal solutions
-        self._fill_dp_table(dp_table, s1_tokens, s2_tokens)
+        solution = []
+        i = len(s1_tokens)
+        j = len(s2_tokens)
         
-        # Extract optimal length
-        optimal_length = dp_table[-1][-1].length
-        
-        # Reconstruct solution path using PathReconstructor
-        solution = self.path_reconstructor.reconstruct_path(dp_table, s1_tokens, s2_tokens)
-        
-        return DPResult(optimal_length, dp_table, solution)
-    
-    def _initialize_dp_table(self, s1_tokens: List[WordToken], s2_tokens: List[WordToken]) -> List[List[DPState]]:
-        """
-        Initialize the DP table with base cases.
-        
-        Args:
-            s1_tokens: Word tokens from the first string
-            s2_tokens: Word tokens from the second string
+        # Backtrack through the DP table to reconstruct the solution
+        while i > 0 or j > 0:
+            current_state = dp_table[i][j]
             
-        Returns:
-            Initialized DP table with base cases filled
-        """
-        rows = len(s1_tokens) + 1
-        cols = len(s2_tokens) + 1
-        
-        # Create table with default states
-        dp_table = [[None for _ in range(cols)] for _ in range(rows)]
-        
-        # Base case: dp[0][0] = empty strings
-        dp_table[0][0] = DPState(
-            length=0,
-            s1_word_index=0,
-            s2_word_index=0,
-            operation=Operation.SKIP
-        )
-        
-        # Base case: dp[i][0] = take all words from s1 only
-        cumulative_length = 0
-        for i in range(1, rows):
-            token = s1_tokens[i-1]
-            cumulative_length += token.total_length
-            dp_table[i][0] = DPState(
-                length=cumulative_length,
-                s1_word_index=i,
-                s2_word_index=0,
-                operation=Operation.INSERT_S1
-            )
-        
-        # Base case: dp[0][j] = take all words from s2 only
-        cumulative_length = 0
-        for j in range(1, cols):
-            token = s2_tokens[j-1]
-            cumulative_length += token.total_length
-            dp_table[0][j] = DPState(
-                length=cumulative_length,
-                s1_word_index=0,
-                s2_word_index=j,
-                operation=Operation.INSERT_S2
-            )
-        
-        return dp_table
-    
-    def _fill_dp_table(self, dp_table: List[List[DPState]], s1_tokens: List[WordToken], s2_tokens: List[WordToken]):
-        """
-        Fill the DP table using optimal substructure.
-        
-        Args:
-            dp_table: The initialized DP table to fill
-            s1_tokens: Word tokens from the first string
-            s2_tokens: Word tokens from the second string
-        """
-        rows = len(s1_tokens) + 1
-        cols = len(s2_tokens) + 1
-        
-        for i in range(1, rows):
-            for j in range(1, cols):
+            if current_state.operation == Operation.INSERT_S1:
+                # Take word from s1 only
+                token = s1_tokens[i-1]
+                combined_token = CombinedToken(
+                    content=self._format_token_content(token),
+                    source_s1_words=[i-1],
+                    source_s2_words=[],
+                    type=TokenType.S1_ONLY
+                )
+                solution.append(combined_token)
+                i -= 1
+                
+            elif current_state.operation == Operation.INSERT_S2:
+                # Take word from s2 only
+                token = s2_tokens[j-1]
+                combined_token = CombinedToken(
+                    content=self._format_token_content(token),
+                    source_s1_words=[],
+                    source_s2_words=[j-1],
+                    type=TokenType.S2_ONLY
+                )
+                solution.append(combined_token)
+                j -= 1
+                
+            elif current_state.operation == Operation.MATCH:
+                # Match/merge both words using optimal character reuse strategy
                 s1_token = s1_tokens[i-1]
                 s2_token = s2_tokens[j-1]
                 
-                # Option 1: Insert word from s1 only
-                insert_s1_cost = dp_table[i-1][j].length + s1_token.total_length
+                # Determine which strategy was used and reconstruct accordingly
+                content = self._reconstruct_optimized_match(s1_token, s2_token)
                 
-                # Option 2: Insert word from s2 only
-                insert_s2_cost = dp_table[i][j-1].length + s2_token.total_length
-                
-                # Option 3: Try to match/merge words (basic implementation)
-                match_cost = self._calculate_match_cost(dp_table[i-1][j-1], s1_token, s2_token)
-                
-                # Choose the option with minimum cost
-                options = [
-                    (insert_s1_cost, Operation.INSERT_S1),
-                    (insert_s2_cost, Operation.INSERT_S2),
-                    (match_cost, Operation.MATCH)
-                ]
-                
-                min_cost, best_operation = min(options, key=lambda x: x[0])
-                
-                dp_table[i][j] = DPState(
-                    length=min_cost,
-                    s1_word_index=i,
-                    s2_word_index=j,
-                    operation=best_operation
+                combined_token = CombinedToken(
+                    content=content,
+                    source_s1_words=[i-1],
+                    source_s2_words=[j-1],
+                    type=TokenType.MERGED
                 )
-    
-    def _calculate_match_cost(self, prev_state: DPState, s1_token: WordToken, s2_token: WordToken) -> int:
-        """
-        Calculate the cost of matching/merging two word tokens with character reuse optimization.
+                solution.append(combined_token)
+                i -= 1
+                j -= 1
+                
+            else:  # Operation.SKIP
+                break
         
-        This implementation uses advanced character reuse strategies:
-        - Prefix/suffix overlap detection
-        - Substring containment optimization
-        - Strategic character interleaving while maintaining word boundaries
+        # Reverse solution since we built it backwards
+        solution.reverse()
+        return solution
+    
+    def _format_token_content(self, token: WordToken) -> str:
+        """
+        Format a WordToken into its string representation.
         
         Args:
-            prev_state: The previous DP state
+            token: The WordToken to format
+            
+        Returns:
+            String representation including spaces
+        """
+        return " " * token.leading_spaces + token.word + " " * token.trailing_spaces
+    
+    def _reconstruct_optimized_match(self, s1_token: WordToken, s2_token: WordToken) -> str:
+        """
+        Reconstruct the optimized match content using the same strategy selection logic.
+        
+        This method replicates the optimization strategy selection from the DPSolver
+        to ensure consistent reconstruction of the optimal character combination.
+        
+        Args:
             s1_token: Word token from first string
             s2_token: Word token from second string
             
         Returns:
-            Cost of matching these two tokens with optimal character reuse
+            The optimized combined content string
         """
-        # Get the actual word content without spaces for optimization analysis
-        word1 = s1_token.word
-        word2 = s2_token.word
-        
-        # Try different character reuse strategies and pick the best
+        # Use the same strategy selection logic as in DPSolver._calculate_match_cost
         strategies = [
             self._try_substring_containment(s1_token, s2_token),
             self._try_prefix_suffix_overlap(s1_token, s2_token),
@@ -205,7 +166,8 @@ class DPSolver:
         # Choose the strategy with minimum length
         best_result = min(strategies, key=lambda x: x['length'])
         
-        return prev_state.length + best_result['length']
+        # Reconstruct the content based on the chosen strategy
+        return self._build_content_from_strategy(s1_token, s2_token, best_result['strategy'])
     
     def _try_substring_containment(self, s1_token: WordToken, s2_token: WordToken) -> dict:
         """
@@ -411,3 +373,113 @@ class DPSolver:
             'strategy': 'basic_concatenation'
         }
     
+    def _build_content_from_strategy(self, s1_token: WordToken, s2_token: WordToken, strategy: str) -> str:
+        """
+        Build the actual content string based on the optimization strategy.
+        
+        Args:
+            s1_token: Word token from first string
+            s2_token: Word token from second string
+            strategy: The strategy identifier
+            
+        Returns:
+            The combined content string
+        """
+        word1 = s1_token.word
+        word2 = s2_token.word
+        
+        # Calculate spacing
+        leading_spaces = max(s1_token.leading_spaces, s2_token.leading_spaces)
+        trailing_spaces = max(s1_token.trailing_spaces, s2_token.trailing_spaces)
+        
+        if strategy == 'substring_containment_s1_contains_s2':
+            # word1 contains word2, use word1
+            return " " * leading_spaces + word1 + " " * trailing_spaces
+            
+        elif strategy == 'substring_containment_s2_contains_s1':
+            # word2 contains word1, use word2
+            return " " * leading_spaces + word2 + " " * trailing_spaces
+            
+        elif strategy.startswith('prefix_suffix_overlap_s1_s2_'):
+            # word1 + word2 with overlap
+            overlap_size = int(strategy.split('_')[-1])
+            combined_word = word1 + word2[overlap_size:]
+            return " " * leading_spaces + combined_word + " " * trailing_spaces
+            
+        elif strategy.startswith('prefix_suffix_overlap_s2_s1_'):
+            # word2 + word1 with overlap
+            overlap_size = int(strategy.split('_')[-1])
+            combined_word = word2 + word1[overlap_size:]
+            return " " * leading_spaces + combined_word + " " * trailing_spaces
+            
+        elif strategy == 'character_interleaving':
+            # Reconstruct the shortest common supersequence
+            supersequence = self._build_shortest_supersequence(word1, word2)
+            return " " * leading_spaces + supersequence + " " * trailing_spaces
+            
+        else:  # basic_concatenation or fallback
+            # Basic concatenation with space between words if needed
+            inter_word_space = ""
+            if s1_token.trailing_spaces == 0 and s2_token.leading_spaces == 0:
+                inter_word_space = " "
+            return " " * leading_spaces + word1 + inter_word_space + word2 + " " * trailing_spaces
+    
+    def _build_shortest_supersequence(self, word1: str, word2: str) -> str:
+        """
+        Build the shortest common supersequence of two words.
+        
+        Args:
+            word1: First word
+            word2: Second word
+            
+        Returns:
+            The shortest supersequence containing both words as subsequences
+        """
+        # Use DP to build the supersequence
+        m, n = len(word1), len(word2)
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        # Initialize base cases
+        for i in range(m + 1):
+            dp[i][0] = i
+        for j in range(n + 1):
+            dp[0][j] = j
+        
+        # Fill the DP table
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if word1[i-1] == word2[j-1]:
+                    dp[i][j] = dp[i-1][j-1] + 1
+                else:
+                    dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + 1
+        
+        # Reconstruct the supersequence
+        result = []
+        i, j = m, n
+        
+        while i > 0 and j > 0:
+            if word1[i-1] == word2[j-1]:
+                # Characters match, add once
+                result.append(word1[i-1])
+                i -= 1
+                j -= 1
+            elif dp[i-1][j] < dp[i][j-1]:
+                # Take from word1
+                result.append(word1[i-1])
+                i -= 1
+            else:
+                # Take from word2
+                result.append(word2[j-1])
+                j -= 1
+        
+        # Add remaining characters
+        while i > 0:
+            result.append(word1[i-1])
+            i -= 1
+        while j > 0:
+            result.append(word2[j-1])
+            j -= 1
+        
+        # Reverse since we built it backwards
+        result.reverse()
+        return ''.join(result)

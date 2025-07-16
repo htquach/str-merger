@@ -71,7 +71,10 @@
   - Upate README and commit the changes
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [ ] 7. Implement optimal path reconstruction
+- [-] 7. Implement optimal path reconstruction
+
+
+
   - Create PathReconstructor that rebuilds solution from DP table
   - Implement backtracking algorithm to find optimal character combination
   - Generate CombinedToken sequence representing the optimal solution
