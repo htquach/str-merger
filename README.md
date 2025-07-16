@@ -28,7 +28,10 @@ Instead of just sticking sentences together (which wastes space on repeated word
 This algorithm takes two input sentences and produces an optimized combined string that:
 - Contains both input sentences as subsequences (you can read both original sentences in the result)
 - Preserves word boundaries and spacing
-- Maximizes character reuse between overlapping words
+- Maximizes character reuse through advanced optimization strategies:
+  - **Substring containment**: When one word contains another (e.g., "test" + "testing" → "testing")
+  - **Prefix/suffix overlap**: When words share common beginnings/endings (e.g., "hello" + "love" → "hellove")
+  - **Character interleaving**: Strategic merging while preserving subsequences (e.g., "abc" + "aec" → "abec")
 - Minimizes the total length of the result
 
 ## Features
@@ -166,7 +169,7 @@ python -m pytest tests/test_models.py -v
 - ✅ Word tokenization with space preservation
 - ✅ Subsequence verification for output validation
 - ✅ Dynamic programming algorithm with basic optimization
-- ⏳ Advanced character reuse optimizations (planned)
+- ✅ Advanced character reuse optimizations (substring containment, prefix/suffix overlap, character interleaving)
 - ⏳ CLI interface (planned)
 
 ## Requirements
