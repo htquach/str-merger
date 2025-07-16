@@ -39,6 +39,7 @@ This algorithm takes two input sentences and produces an optimized combined stri
 - **Word-level processing**: Maintains word integrity during optimization
 - **Space preservation**: Handles leading/trailing spaces correctly
 - **Input validation**: Comprehensive preprocessing with error handling
+- **Edge case handling**: Graceful handling of empty strings, identical inputs, and boundary cases
 - **Optimization metrics**: Detailed statistics on space savings achieved
 - **Robust data models**: Type-safe data structures with validation
 
@@ -140,6 +141,17 @@ The algorithm uses dynamic programming to find the optimal combination by:
 2. **DP Table**: Build a table tracking optimal subproblem solutions
 3. **Backtracking**: Reconstruct the optimal solution path
 4. **Validation**: Verify the result contains both inputs as subsequences
+
+## Edge Case Handling
+
+The algorithm gracefully handles various edge cases:
+
+- **Empty strings**: Empty strings are always considered valid subsequences of any output
+- **Identical strings**: When both inputs are identical, the output equals the input
+- **One string contains another**: The output equals the longer containing string
+- **No common characters**: Falls back to basic concatenation with minimal overhead
+- **Single character inputs**: Optimized handling for minimal input cases
+- **Whitespace-only strings**: Proper handling of spaces and whitespace patterns
 
 
 

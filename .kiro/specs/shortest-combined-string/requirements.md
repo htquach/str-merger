@@ -82,6 +82,8 @@ This feature implements a Python algorithm to find the shortest possible combine
 2. WHEN processing is complete THEN the program SHALL report the length savings achieved
 3. WHEN edge cases occur (empty strings, identical strings, etc.) THEN the algorithm SHALL handle them gracefully
 4. WHEN verification fails THEN the program SHALL provide clear error messages indicating the issue
+5. WHEN either input string is empty THEN it SHALL be considered a valid subsequence of any output string
+6. WHEN both input strings are empty THEN the verification SHALL always return valid regardless of output content
 
 ### Requirement 8: Test Case Coverage
 

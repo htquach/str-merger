@@ -198,7 +198,7 @@ The DP table uses a 2D array where each cell contains:
 
 ### Input Validation Errors
 
-- **Empty Input**: Handle gracefully, return appropriate empty result
+- **Empty Input**: Handle gracefully, empty strings are always valid subsequences of any output
 - **Null/Undefined**: Throw descriptive error with usage guidance
 - **Invalid Characters**: Process with warnings for unusual characters
 
@@ -231,6 +231,12 @@ The DP table uses a 2D array where each cell contains:
    - Optimal solution verification for known cases
    - Performance testing with various input sizes
    - Edge case handling (identical strings, no overlap, complete containment)
+
+4. **SubsequenceVerifier Tests**
+   - Empty string handling: empty strings are always valid subsequences
+   - Single empty input: one empty string with non-empty output
+   - Both empty inputs: both empty strings with any output content
+   - Subsequence validation accuracy for all edge cases
 
 ### Integration Testing
 

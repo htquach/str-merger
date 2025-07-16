@@ -156,6 +156,9 @@ class TestSubsequenceVerifier:
         s1 = "aaa"
         s2 = "bbb"
         output = "ababab"
+
+        # FIXME: That test is not valid.  "aaa" is a word, so cannot have space or interleaving characters between them.  
+        # only aaabbb or bbbaaa is valid for the above input string s1 and s2.
         
         result = self.verifier.verify(s1, s2, output)
         
@@ -208,6 +211,9 @@ class TestSubsequenceVerifier:
         s1 = "café"
         s2 = "naïve"
         output = "café naïve"
+
+        # FIXME: the valid output should be either "cafénaïve" or "naïvecafé"
+        # While "café naïve" contains both strings, but it is not the shortest output.
         
         result = self.verifier.verify(s1, s2, output)
         
@@ -221,6 +227,8 @@ class TestSubsequenceVerifier:
         s2 = "his son freddy love vase"
         # Example valid output that contains both as subsequences
         output = "this is son freddy love a red vase"
+
+        # FIXME: "this isonafreddy love vase"
         
         result = self.verifier.verify(s1, s2, output)
         

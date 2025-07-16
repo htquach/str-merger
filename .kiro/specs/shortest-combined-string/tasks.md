@@ -57,7 +57,9 @@
   - Write unit tests for DP table structure and basic transitions
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [-] 6. Implement character reuse optimization in DP algorithm
+- [x] 6. Implement character reuse optimization in DP algorithm
+
+
 
 
 
@@ -104,10 +106,11 @@
   - Add handling for identical strings (output equals input)
   - Add handling for one string containing the other (output equals longer string)
   - Add handling for strings with no common characters
-  - Add handling for empty strings and single character inputs
-  - Write comprehensive edge case test suite
+  - Add handling for empty strings (empty strings are always valid subsequences of any output)
+  - Add handling for single character inputs and boundary cases
+  - Write comprehensive edge case test suite including empty string validation
   - Upate README and commit the changes
-  - _Requirements: 7.3, 8.2, 8.3, 8.4_
+  - _Requirements: 7.3, 7.5, 7.6, 8.2, 8.3, 8.4_
 
 - [ ] 12. Add error handling and validation throughout
   - Implement proper exception handling for all error conditions
