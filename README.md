@@ -56,7 +56,7 @@ python -m pytest
 ## Usage
 
 ```python
-from shortest_combined_string import InputProcessor, WordTokenizer
+from shortest_combined_string import InputProcessor, WordTokenizer, SubsequenceVerifier
 
 # Input preprocessing with validation
 processor = InputProcessor()
@@ -87,6 +87,26 @@ print(f"Reconstructed: '{reconstructed}'")
 # S1 words: ['this', 'is', 'a', 'red', 'vase']
 # S2 words: ['his', 'son', 'freddy', 'love', 'vase']
 # Reconstructed: 'this is a red vase'
+
+# Output validation with subsequence verification
+verifier = SubsequenceVerifier()
+s1 = "this is a red vase"
+s2 = "his son freddy love vase"
+output = "this is son freddy love a red vase"
+
+verification = verifier.verify(s1, s2, output)
+print(f"Valid output: {verification.is_valid}")
+print(f"S1 subsequence positions: {verification.s1_match.output_positions}")
+print(f"S2 subsequence positions: {verification.s2_match.output_positions}")
+
+# Generate detailed report
+report = verifier.get_detailed_match_info(verification)
+print(report)
+
+# Example output:
+# Valid output: True
+# S1 subsequence positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+# S2 subsequence positions: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 ```
 
 ## Algorithm Approach
@@ -124,8 +144,8 @@ python -m pytest tests/test_models.py -v
 - ✅ Core data models implemented
 - ✅ Input preprocessing with validation
 - ✅ Word tokenization with space preservation
+- ✅ Subsequence verification for output validation
 - ⏳ Dynamic programming algorithm (planned)
-- ⏳ Result validation (planned)
 - ⏳ CLI interface (planned)
 
 ## Requirements
@@ -152,13 +172,13 @@ The project follows a modular architecture:
 
 ```
 shortest_combined_string/
-├── __init__.py          # Package exports
-├── models.py            # Core data structures
-├── input_processor.py   # Input validation and preprocessing
-├── word_tokenizer.py    # Word boundary tokenization
-├── algorithm.py         # DP implementation (planned)
-├── validator.py         # Result validation (planned)
-└── cli.py               # Command-line interface (planned)
+├── __init__.py              # Package exports
+├── models.py                # Core data structures
+├── input_processor.py       # Input validation and preprocessing
+├── word_tokenizer.py        # Word boundary tokenization
+├── subsequence_verifier.py  # Output validation and verification
+├── algorithm.py             # DP implementation (planned)
+└── cli.py                   # Command-line interface (planned)
 ```
 
 ## Performance

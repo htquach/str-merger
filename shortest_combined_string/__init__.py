@@ -18,6 +18,7 @@ from .models import (
 )
 from .input_processor import InputProcessor
 from .word_tokenizer import WordTokenizer
+from .subsequence_verifier import SubsequenceVerifier, VerificationResult, SubsequenceMatch
 
 __version__ = "1.0.0"
 __all__ = [
@@ -30,5 +31,8 @@ __all__ = [
     "Operation",
     "TokenType",
     "InputProcessor",
-    "WordTokenizer"
+    "WordTokenizer",
+    "SubsequenceVerifier",
+    "VerificationResult",
+    "SubsequenceMatch"
 ]
