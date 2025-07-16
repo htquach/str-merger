@@ -95,3 +95,4 @@ This feature implements a Python algorithm to find the shortest possible combine
 2. WHEN testing identical strings THEN the output SHALL equal the input string
 3. WHEN one string contains the other THEN the output SHALL equal the longer string
 4. WHEN strings have no common characters THEN the output length SHALL equal the sum of input lengths
+5. WHEN writing test assertions THEN use `is_invalid` property instead of `not is_valid` for clearer test readability

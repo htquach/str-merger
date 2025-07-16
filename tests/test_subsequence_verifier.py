@@ -72,9 +72,9 @@ class TestSubsequenceVerifier:
         
         result = self.verifier.verify(s1, s2, output)
         
-        assert not result.is_valid
-        assert not result.s1_match.is_valid
-        assert not result.s2_match.is_valid
+        assert result.is_invalid
+        assert result.s1_match.is_invalid
+        assert result.s2_match.is_invalid
         assert 'c' in result.s1_match.missing_chars
         assert 'd' in result.s2_match.missing_chars
         assert len(result.validation_errors) == 2
@@ -87,8 +87,8 @@ class TestSubsequenceVerifier:
         
         result = self.verifier.verify(s1, s2, output)
         
-        assert not result.is_valid
-        assert not result.s1_match.is_valid  # 'a' after 'c' violates subsequence order
+        assert result.is_invalid
+        assert result.s1_match.is_invalid  # 'a' after 'c' violates subsequence order
         assert result.s2_match.is_valid  # s2 is still valid
         assert len(result.validation_errors) == 1
     
@@ -107,9 +107,9 @@ class TestSubsequenceVerifier:
         """Test verification with empty output string."""
         result = self.verifier.verify("a", "b", "")
         
-        assert not result.is_valid
-        assert not result.s1_match.is_valid
-        assert not result.s2_match.is_valid
+        assert result.is_invalid
+        assert result.s1_match.is_invalid
+        assert result.s2_match.is_invalid
         assert 'a' in result.s1_match.missing_chars
         assert 'b' in result.s2_match.missing_chars
         assert len(result.validation_errors) == 2
@@ -190,8 +190,8 @@ class TestSubsequenceVerifier:
         
         result = self.verifier.verify(s1, s2, output)
         
-        assert not result.is_valid
-        assert not result.s1_match.is_valid  # 'A' != 'a'
+        assert result.is_invalid
+        assert result.s1_match.is_invalid  # 'A' != 'a'
         assert result.s2_match.is_valid
     
     def test_special_characters(self):
@@ -228,7 +228,7 @@ class TestSubsequenceVerifier:
         # Example valid output that contains both as subsequences
         output = "this is son freddy love a red vase"
 
-        # FIXME: "this isonafreddy love vase"
+        # FIXME: a valid output for the s1 and s2 above should be this "this isonafreddy love vase"
         
         result = self.verifier.verify(s1, s2, output)
         
@@ -244,8 +244,8 @@ class TestSubsequenceVerifier:
         
         result = self.verifier.verify(s1, s2, output)
         
-        assert not result.is_valid
-        assert not result.s1_match.is_valid
+        assert result.is_invalid
+        assert result.s1_match.is_invalid
         assert result.s2_match.is_valid
         
         # Check error details
@@ -318,9 +318,9 @@ class TestSubsequenceVerifier:
         assert result.is_valid
         
         result = self.verifier.verify("a", "b", "a")
-        assert not result.is_valid
+        assert result.is_invalid
         assert result.s1_match.is_valid
-        assert not result.s2_match.is_valid
+        assert result.s2_match.is_invalid
     
     def test_whitespace_only_strings(self):
         """Test verification with whitespace-only strings."""
@@ -328,6 +328,6 @@ class TestSubsequenceVerifier:
         assert result.is_valid
         
         result = self.verifier.verify("  ", " ", " ")
-        assert not result.is_valid  # Need two spaces for first input
-        assert not result.s1_match.is_valid
+        assert result.is_invalid  # Need two spaces for first input
+        assert result.s1_match.is_invalid
         assert result.s2_match.is_valid

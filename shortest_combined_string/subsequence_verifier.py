@@ -25,6 +25,7 @@ class SubsequenceMatch:
     input_string: str
     output_positions: List[int]
     is_valid: bool
+    is_invalid: bool
     missing_chars: List[str]
     error_details: Optional[str] = None
 
@@ -41,6 +42,7 @@ class VerificationResult:
         validation_errors: List of validation error messages
     """
     is_valid: bool
+    is_invalid: bool
     s1_match: SubsequenceMatch
     s2_match: SubsequenceMatch
     validation_errors: List[str]
@@ -94,6 +96,7 @@ class SubsequenceVerifier:
         
         return VerificationResult(
             is_valid=is_valid,
+            is_invalid=not is_valid,
             s1_match=s1_match,
             s2_match=s2_match,
             validation_errors=validation_errors
@@ -116,6 +119,7 @@ class SubsequenceVerifier:
                 input_string=input_str,
                 output_positions=[],
                 is_valid=True,
+                is_invalid=False,
                 missing_chars=[]
             )
         
@@ -138,6 +142,7 @@ class SubsequenceVerifier:
                     input_string=input_str,
                     output_positions=positions,
                     is_valid=False,
+                    is_invalid=True,
                     missing_chars=missing_chars,
                     error_details=error_details
                 )
@@ -150,6 +155,7 @@ class SubsequenceVerifier:
             input_string=input_str,
             output_positions=positions,
             is_valid=True,
+            is_invalid=False,
             missing_chars=[]
         )
     

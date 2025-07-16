@@ -120,6 +120,7 @@ output = combined_string
 
 verification = verifier.verify(s1, s2, output)
 print(f"Valid output: {verification.is_valid}")
+print(f"Invalid output: {verification.is_invalid}")  # Convenience property for clearer assertions
 print(f"S1 subsequence positions: {verification.s1_match.output_positions}")
 print(f"S2 subsequence positions: {verification.s2_match.output_positions}")
 
@@ -129,6 +130,7 @@ print(report)
 
 # Example output:
 # Valid output: True
+# Invalid output: False
 # S1 subsequence positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # S2 subsequence positions: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 ```

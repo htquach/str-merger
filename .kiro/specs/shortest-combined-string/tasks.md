@@ -42,8 +42,9 @@
 
   - Implement subsequence verification algorithm that checks if output contains both inputs as subsequences
   - Create detailed error reporting for subsequence validation failures
-  - Write unit tests with various valid and invalid subsequence scenarios
-  - _Requirements: 1.1, 1.2, 1.3, 7.1, 7.4_
+  - Add `is_invalid` convenience properties to VerificationResult and SubsequenceMatch for clearer test assertions
+  - Write unit tests with various valid and invalid subsequence scenarios using `is_invalid` property
+  - _Requirements: 1.1, 1.2, 1.3, 7.1, 7.4, 8.5_
 
 - [x] 5. Implement basic DP algorithm structure
 

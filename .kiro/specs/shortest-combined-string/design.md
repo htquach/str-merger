@@ -178,6 +178,23 @@ class OptimizationMetrics:
     compression_ratio: float
 
 @dataclass
+class SubsequenceMatch:
+    input_string: str
+    output_positions: List[int]
+    is_valid: bool
+    is_invalid: bool  # Convenience property for clearer test assertions
+    missing_chars: List[str]
+    error_details: Optional[str]
+
+@dataclass
+class VerificationResult:
+    is_valid: bool
+    is_invalid: bool  # Convenience property for clearer test assertions
+    s1_match: SubsequenceMatch
+    s2_match: SubsequenceMatch
+    validation_errors: List[str]
+
+@dataclass
 class AlgorithmResult:
     combined_string: str
     metrics: OptimizationMetrics
@@ -237,6 +254,7 @@ The DP table uses a 2D array where each cell contains:
    - Single empty input: one empty string with non-empty output
    - Both empty inputs: both empty strings with any output content
    - Subsequence validation accuracy for all edge cases
+   - Test readability: use `is_invalid` property instead of `not is_valid` for clearer assertions
 
 ### Integration Testing
 
