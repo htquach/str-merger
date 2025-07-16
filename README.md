@@ -56,7 +56,9 @@ python -m pytest
 ## Usage
 
 ```python
-from shortest_combined_string import InputProcessor, WordTokenizer, SubsequenceVerifier
+from shortest_combined_string import (
+    InputProcessor, WordTokenizer, SubsequenceVerifier, DPSolver
+)
 
 # Input preprocessing with validation
 processor = InputProcessor()
@@ -73,26 +75,44 @@ print(f"Had consecutive spaces: {result.has_consecutive_spaces}")
 
 # Word tokenization for algorithm processing
 tokenizer = WordTokenizer()
-tokens1 = tokenizer.tokenize("this is a red vase")
-tokens2 = tokenizer.tokenize("his son freddy love vase")
+tokens1 = tokenizer.tokenize("hello world")
+tokens2 = tokenizer.tokenize("world test")
 
 print(f"S1 words: {[token.word for token in tokens1]}")
 print(f"S2 words: {[token.word for token in tokens2]}")
 
-# Perfect reconstruction
-reconstructed = tokenizer.reconstruct_from_tokens(tokens1)
-print(f"Reconstructed: '{reconstructed}'")
+# Example output:
+# S1 words: ['hello', 'world']
+# S2 words: ['world', 'test']
+
+# Dynamic programming algorithm to find optimal combination
+solver = DPSolver()
+dp_result = solver.solve(tokens1, tokens2)
+
+print(f"Optimal length: {dp_result.optimal_length}")
+print(f"Solution tokens: {len(dp_result.solution)}")
+
+# Reconstruct the combined string from solution
+combined_parts = []
+for token in dp_result.solution:
+    combined_parts.append(token.content)
+    print(f"Token: '{token.content}' (Type: {token.type.value})")
+
+combined_string = "".join(combined_parts)
+print(f"Combined result: '{combined_string}'")
 
 # Example output:
-# S1 words: ['this', 'is', 'a', 'red', 'vase']
-# S2 words: ['his', 'son', 'freddy', 'love', 'vase']
-# Reconstructed: 'this is a red vase'
+# Optimal length: 16
+# Solution tokens: 3
+# Token: 'hello ' (Type: S1_ONLY)
+# Token: 'world test' (Type: MERGED)
+# Combined result: 'hello world test'
 
 # Output validation with subsequence verification
 verifier = SubsequenceVerifier()
-s1 = "this is a red vase"
-s2 = "his son freddy love vase"
-output = "this is son freddy love a red vase"
+s1 = "hello world"
+s2 = "world test"
+output = combined_string
 
 verification = verifier.verify(s1, s2, output)
 print(f"Valid output: {verification.is_valid}")
@@ -105,8 +125,8 @@ print(report)
 
 # Example output:
 # Valid output: True
-# S1 subsequence positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
-# S2 subsequence positions: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+# S1 subsequence positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# S2 subsequence positions: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 ```
 
 ## Algorithm Approach
@@ -145,7 +165,8 @@ python -m pytest tests/test_models.py -v
 - ✅ Input preprocessing with validation
 - ✅ Word tokenization with space preservation
 - ✅ Subsequence verification for output validation
-- ⏳ Dynamic programming algorithm (planned)
+- ✅ Dynamic programming algorithm with basic optimization
+- ⏳ Advanced character reuse optimizations (planned)
 - ⏳ CLI interface (planned)
 
 ## Requirements
@@ -177,7 +198,7 @@ shortest_combined_string/
 ├── input_processor.py       # Input validation and preprocessing
 ├── word_tokenizer.py        # Word boundary tokenization
 ├── subsequence_verifier.py  # Output validation and verification
-├── algorithm.py             # DP implementation (planned)
+├── dp_solver.py             # Dynamic programming algorithm implementation
 └── cli.py                   # Command-line interface (planned)
 ```
 

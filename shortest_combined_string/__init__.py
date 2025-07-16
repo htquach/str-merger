@@ -19,6 +19,7 @@ from .models import (
 from .input_processor import InputProcessor
 from .word_tokenizer import WordTokenizer
 from .subsequence_verifier import SubsequenceVerifier, VerificationResult, SubsequenceMatch
+from .dp_solver import DPSolver, DPResult
 
 __version__ = "1.0.0"
 __all__ = [
@@ -34,5 +35,7 @@ __all__ = [
     "WordTokenizer",
     "SubsequenceVerifier",
     "VerificationResult",
-    "SubsequenceMatch"
+    "SubsequenceMatch",
+    "DPSolver",
+    "DPResult"
 ]
