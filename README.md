@@ -338,6 +338,8 @@ python -m pytest tests/test_models.py -v
 - ✅ Edge case handling and tests
 - ✅ Error handling and validation throughout
 - ✅ CLI interface with colored output and metrics display
+- ✅ Performance optimization with memoization and space efficiency improvements
+- ✅ Comprehensive performance benchmarks validating O(n*m) complexity
 
 ## Requirements
 
@@ -381,3 +383,28 @@ The algorithm has:
 - Time complexity: O(n × m) where n, m are word counts
 - Space complexity: O(n × m) for the DP table
 - Optimized for typical sentence lengths (10-50 words)
+
+### Performance Optimizations
+
+The algorithm includes several performance optimizations:
+
+1. **Memoization for Expensive Operations**:
+   - Function-level memoization using `@lru_cache` for frequently called pure functions
+   - Instance-level memoization using custom caching for token comparison operations
+   - Caching of complex calculations like prefix/suffix overlap detection and shortest supersequence generation
+
+2. **Space Optimization**:
+   - Efficient data structures to minimize memory footprint
+   - Strategic clearing of memoization caches between operations to prevent memory leaks
+   - Reuse of calculation results across components to avoid redundant processing
+
+3. **Algorithmic Optimizations**:
+   - Early detection of edge cases to bypass expensive DP calculations when possible
+   - Optimized character reuse strategies with cost-based selection
+   - Efficient subsequence verification with linear-time complexity
+
+4. **Performance Benchmarking**:
+   - Comprehensive test suite validating O(n*m) complexity across various input sizes
+   - Measurement of memoization effectiveness with repeated operations
+   - Validation of space efficiency with large inputs (500+ characters)
+   - Performance testing with varying input ratios to ensure consistent behavior

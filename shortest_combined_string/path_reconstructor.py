@@ -6,6 +6,7 @@ from the DP table using backtracking algorithm to find the optimal character com
 """
 
 from typing import List
+from functools import lru_cache
 from .models import WordToken, DPState, Operation, CombinedToken, TokenType
 from .exceptions import PathReconstructionError
 
@@ -21,7 +22,7 @@ class PathReconstructor:
     
     def __init__(self):
         """Initialize the PathReconstructor."""
-        pass
+        self._memoization_cache = {}
     
     def reconstruct_path(self, dp_table: List[List[DPState]], s1_tokens: List[WordToken], s2_tokens: List[WordToken]) -> List[CombinedToken]:
         """
@@ -72,6 +73,9 @@ class PathReconstructor:
             for j, state in enumerate(row):
                 if not isinstance(state, DPState):
                     raise PathReconstructionError(f"DP table entry [{i}][{j}] must be a DPState object, got {type(state).__name__}")
+        
+        # Clear memoization cache for a new reconstruction
+        self._memoization_cache = {}
         
         solution = []
         i = len(s1_tokens)
@@ -156,6 +160,20 @@ class PathReconstructor:
         Returns:
             The optimized combined content string
         """
+        # Use memoization to avoid recalculating expensive operations
+        # Create a unique key for this token pair
+        cache_key = (
+            s1_token.word, 
+            s1_token.leading_spaces, 
+            s1_token.trailing_spaces,
+            s2_token.word, 
+            s2_token.leading_spaces, 
+            s2_token.trailing_spaces
+        )
+        
+        if cache_key in self._memoization_cache:
+            return self._memoization_cache[cache_key]
+        
         # Use the same strategy selection logic as in DPSolver._calculate_match_cost
         strategies = [
             self._try_substring_containment(s1_token, s2_token),
@@ -168,7 +186,12 @@ class PathReconstructor:
         best_result = min(strategies, key=lambda x: x['length'])
         
         # Reconstruct the content based on the chosen strategy
-        return self._build_content_from_strategy(s1_token, s2_token, best_result['strategy'])
+        content = self._build_content_from_strategy(s1_token, s2_token, best_result['strategy'])
+        
+        # Cache the result for future use
+        self._memoization_cache[cache_key] = content
+        
+        return content
     
     def _try_substring_containment(self, s1_token: WordToken, s2_token: WordToken) -> dict:
         """
@@ -229,16 +252,10 @@ class PathReconstructor:
         word2 = s2_token.word
         
         # Try word1 + word2 with overlap (word1's suffix overlaps with word2's prefix)
-        max_overlap_12 = 0
-        for i in range(1, min(len(word1), len(word2)) + 1):
-            if word1[-i:] == word2[:i]:
-                max_overlap_12 = i
+        max_overlap_12 = self._find_max_overlap(word1, word2)
         
         # Try word2 + word1 with overlap (word2's suffix overlaps with word1's prefix)
-        max_overlap_21 = 0
-        for i in range(1, min(len(word1), len(word2)) + 1):
-            if word2[-i:] == word1[:i]:
-                max_overlap_21 = i
+        max_overlap_21 = self._find_max_overlap(word2, word1)
         
         # Calculate costs for both arrangements
         if max_overlap_12 > 0:
@@ -276,6 +293,27 @@ class PathReconstructor:
                 'strategy': 'no_prefix_suffix_overlap'
             }
     
+    @staticmethod
+    @lru_cache(maxsize=1024)
+    def _find_max_overlap(word1: str, word2: str) -> int:
+        """
+        Find the maximum overlap where the suffix of word1 matches the prefix of word2.
+        
+        This function is memoized to avoid recalculating the same overlaps.
+        
+        Args:
+            word1: First word
+            word2: Second word
+            
+        Returns:
+            Maximum overlap length
+        """
+        max_overlap = 0
+        for i in range(1, min(len(word1), len(word2)) + 1):
+            if word1[-i:] == word2[:i]:
+                max_overlap = i
+        return max_overlap
+    
     def _try_character_interleaving(self, s1_token: WordToken, s2_token: WordToken) -> dict:
         """
         Try strategic character interleaving while maintaining word boundaries.
@@ -305,6 +343,41 @@ class PathReconstructor:
         
         # Use dynamic programming to find the shortest supersequence
         # that contains both words as subsequences
+        supersequence_length = self._calculate_shortest_supersequence_length(word1, word2)
+        
+        # Only use this strategy if it provides any savings
+        basic_length = len(word1) + len(word2) + 1  # +1 for space between words
+        if supersequence_length >= basic_length:  # No savings
+            return {
+                'length': float('inf'),
+                'strategy': 'insufficient_interleaving_savings'
+            }
+        
+        # Add spacing
+        total_spaces = max(s1_token.leading_spaces, s2_token.leading_spaces) + \
+                      max(s1_token.trailing_spaces, s2_token.trailing_spaces)
+        
+        return {
+            'length': supersequence_length + total_spaces,
+            'strategy': 'character_interleaving'
+        }
+    
+    @staticmethod
+    @lru_cache(maxsize=1024)
+    def _calculate_shortest_supersequence_length(word1: str, word2: str) -> int:
+        """
+        Calculate the length of the shortest common supersequence of two words.
+        
+        This function is memoized to avoid recalculating the same supersequences.
+        
+        Args:
+            word1: First word
+            word2: Second word
+            
+        Returns:
+            Length of the shortest supersequence
+        """
+        # Use DP to find the shortest supersequence length
         dp = [[0] * (len(word2) + 1) for _ in range(len(word1) + 1)]
         
         # Initialize base cases
@@ -324,24 +397,7 @@ class PathReconstructor:
                     dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + 1
         
         # The result is the length of the shortest common supersequence
-        supersequence_length = dp[len(word1)][len(word2)]
-        
-        # Only use this strategy if it provides any savings
-        basic_length = len(word1) + len(word2) + 1  # +1 for space between words
-        if supersequence_length >= basic_length:  # No savings
-            return {
-                'length': float('inf'),
-                'strategy': 'insufficient_interleaving_savings'
-            }
-        
-        # Add spacing
-        total_spaces = max(s1_token.leading_spaces, s2_token.leading_spaces) + \
-                      max(s1_token.trailing_spaces, s2_token.trailing_spaces)
-        
-        return {
-            'length': supersequence_length + total_spaces,
-            'strategy': 'character_interleaving'
-        }
+        return dp[len(word1)][len(word2)]
     
     def _try_basic_concatenation(self, s1_token: WordToken, s2_token: WordToken) -> dict:
         """
@@ -425,9 +481,13 @@ class PathReconstructor:
                 inter_word_space = " "
             return " " * leading_spaces + word1 + inter_word_space + word2 + " " * trailing_spaces
     
-    def _build_shortest_supersequence(self, word1: str, word2: str) -> str:
+    @staticmethod
+    @lru_cache(maxsize=1024)
+    def _build_shortest_supersequence(word1: str, word2: str) -> str:
         """
         Build the shortest common supersequence of two words.
+        
+        This function is memoized to avoid recalculating the same supersequences.
         
         Args:
             word1: First word
