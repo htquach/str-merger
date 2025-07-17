@@ -331,3 +331,19 @@ class TestSubsequenceVerifier:
         assert result.is_invalid  # Need two spaces for first input
         assert result.s1_match.is_invalid
         assert result.s2_match.is_valid
+        
+    def test_space_matching_with_characters(self):
+        """Test verification where characters match with spaces from another string."""
+        s1 = "aa bb"
+        s2 = "cc"
+        output = "aaccbb"  # 'cc' from s2 matches with the space in s1
+        
+        result = self.verifier.verify(s1, s2, output)
+        
+        assert result.is_valid
+        assert result.s1_match.is_valid
+        assert result.s2_match.is_valid
+        # Verify positions for s1 "aa bb" in "aaccbb"
+        assert result.s1_match.output_positions == [0, 1, 4, 5]
+        # Verify positions for s2 "cc" in "aaccbb"
+        assert result.s2_match.output_positions == [2, 3]

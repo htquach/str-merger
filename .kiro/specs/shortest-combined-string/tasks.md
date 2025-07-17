@@ -1,33 +1,18 @@
 # Implementation Plan
 
 - [x] 1. Set up project structure and core data models
-
-
-
-
-
   - Create Python package structure with proper imports
   - Implement all data classes (WordToken, PreprocessedInput, DPState, etc.)
   - Write unit tests for data model validation and serialization
   - _Requirements: 5.1, 5.2, 5.3_
 
 - [x] 2. Implement InputProcessor with validation and preprocessing
-
-
-
-
-
   - Create InputProcessor class with consecutive space detection
   - Implement space normalization and warning generation
   - Write comprehensive unit tests for edge cases (empty strings, only spaces, mixed content)
   - _Requirements: 6.1, 6.2, 6.3_
 
 - [x] 3. Implement WordTokenizer for word boundary handling
-
-
-
-
-
   - Create WordTokenizer class that splits strings while preserving space metadata
   - Implement tokenize method that creates WordToken objects with leading/trailing space counts
   - Implement reconstruct_from_tokens method for round-trip validation
@@ -35,11 +20,6 @@
   - _Requirements: 4.1, 4.2, 4.3, 5.4_
 
 - [x] 4. Create SubsequenceVerifier for output validation
-
-
-
-
-
   - Implement subsequence verification algorithm that checks if output contains both inputs as subsequences
   - Create detailed error reporting for subsequence validation failures
   - Add `is_invalid` convenience properties to VerificationResult and SubsequenceMatch for clearer test assertions
@@ -47,11 +27,6 @@
   - _Requirements: 1.1, 1.2, 1.3, 7.1, 7.4, 8.5_
 
 - [x] 5. Implement basic DP algorithm structure
-
-
-
-
-
   - Create DPSolver class with DP table initialization
   - Implement basic state transition framework without optimization
   - Create simple word-by-word combination logic as baseline
@@ -59,24 +34,15 @@
   - _Requirements: 5.1, 5.2, 5.3_
 
 - [x] 6. Implement character reuse optimization in DP algorithm
-
-
-
-
-
   - Add prefix/suffix overlap detection between words
   - Implement substring containment optimization
   - Add strategic character interleaving while maintaining word boundaries
+  - Implement space matching (allowing words/characters to match with spaces from another string)
   - Write unit tests verifying character reuse maximization
-  - Upate README and commit the changes
-  - _Requirements: 3.1, 3.2, 3.3_
+  - Update README and commit the changes
+  - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
 - [x] 7. Implement optimal path reconstruction
-
-
-
-
-
   - Create PathReconstructor that rebuilds solution from DP table
   - Implement backtracking algorithm to find optimal character combination
   - Generate CombinedToken sequence representing the optimal solution
@@ -84,10 +50,7 @@
   - Upate README and commit the changes
   - _Requirements: 2.3, 5.1_
 
-- [-] 8. Implement ResultFormatter and metrics calculation
-
-
-
+- [x] 8. Implement ResultFormatter and metrics calculation
   - Create ResultFormatter that assembles final output string from CombinedToken sequence
   - Implement OptimizationMetrics calculation (savings, compression ratio)
   - Add leading/trailing space trimming to final output
