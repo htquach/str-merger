@@ -91,6 +91,9 @@ class SubsequenceVerifier:
         s1_match = self._verify_subsequence(s1, output, "s1")
         s2_match = self._verify_subsequence(s2, output, "s2")
         
+        # Verify word boundary preservation
+        word_boundary_errors = self._verify_word_boundaries(s1, s2, output)
+        
         # Collect validation errors
         validation_errors = []
         if not s1_match.is_valid:
@@ -98,8 +101,11 @@ class SubsequenceVerifier:
         if not s2_match.is_valid:
             validation_errors.append(f"Second input string is not a subsequence of output: {s2_match.error_details}")
         
+        # Add word boundary errors if any
+        validation_errors.extend(word_boundary_errors)
+        
         # Overall validation status
-        is_valid = s1_match.is_valid and s2_match.is_valid
+        is_valid = s1_match.is_valid and s2_match.is_valid and not word_boundary_errors
         
         return VerificationResult(
             is_valid=is_valid,
@@ -254,6 +260,65 @@ class SubsequenceVerifier:
         )
         
         return error_msg
+    
+    def _verify_word_boundaries(self, s1: str, s2: str, output: str) -> List[str]:
+        """
+        Verify that word boundaries are preserved in the output string.
+        
+        This method checks that spaces between words in the original input strings
+        are properly maintained in the output string, ensuring word integrity.
+        
+        Args:
+            s1: First input string
+            s2: Second input string
+            output: Combined output string to verify
+            
+        Returns:
+            List of validation error messages if word boundaries are violated
+        """
+        errors = []
+        
+        # Check word boundaries in s1
+        s1_words = s1.split()
+        if len(s1_words) > 1:
+            # Check if words from s1 appear in the correct order with spaces between them
+            for i in range(len(s1_words) - 1):
+                word1 = s1_words[i]
+                word2 = s1_words[i + 1]
+                
+                # Find positions of these words in the output
+                pos1 = output.find(word1)
+                pos2 = output.find(word2, pos1 + len(word1))
+                
+                if pos1 != -1 and pos2 != -1:
+                    # Check if there's at least one space between the words
+                    between_text = output[pos1 + len(word1):pos2]
+                    if not any(c.isspace() for c in between_text):
+                        errors.append(
+                            f"Word boundary violation in s1: '{word1}' and '{word2}' are not separated by spaces in output"
+                        )
+        
+        # Check word boundaries in s2
+        s2_words = s2.split()
+        if len(s2_words) > 1:
+            # Check if words from s2 appear in the correct order with spaces between them
+            for i in range(len(s2_words) - 1):
+                word1 = s2_words[i]
+                word2 = s2_words[i + 1]
+                
+                # Find positions of these words in the output
+                pos1 = output.find(word1)
+                pos2 = output.find(word2, pos1 + len(word1))
+                
+                if pos1 != -1 and pos2 != -1:
+                    # Check if there's at least one space between the words
+                    between_text = output[pos1 + len(word1):pos2]
+                    if not any(c.isspace() for c in between_text):
+                        errors.append(
+                            f"Word boundary violation in s2: '{word1}' and '{word2}' are not separated by spaces in output"
+                        )
+        
+        return errors
     
     def get_detailed_match_info(self, verification_result: VerificationResult) -> str:
         """

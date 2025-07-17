@@ -356,8 +356,7 @@ class DPSolver:
         Try strategic character interleaving while maintaining word boundaries.
         
         This strategy is conservative and only applies when it can maintain word integrity.
-        For now, it returns a high cost to prefer other strategies that better preserve
-        word boundaries as required by the design.
+        It respects the preserve_spaces flag to ensure word boundaries are maintained.
         
         Args:
             s1_token: Word token from first string
@@ -368,6 +367,14 @@ class DPSolver:
         """
         word1 = s1_token.word
         word2 = s2_token.word
+        
+        # If either token requires space preservation for word boundaries,
+        # we should not use character interleaving that might remove spaces
+        if s1_token.preserve_spaces or s2_token.preserve_spaces:
+            return {
+                'length': float('inf'),
+                'strategy': 'spaces_must_be_preserved'
+            }
         
         # Only apply character interleaving if words have significant character overlap
         # and the result would preserve word readability

@@ -36,11 +36,13 @@ class WordToken:
         leading_spaces: Number of spaces before the word
         trailing_spaces: Number of spaces after the word
         original_index: Position of this word in the original string
+        preserve_spaces: Whether spaces should be preserved for word boundary
     """
     word: str
     leading_spaces: int
     trailing_spaces: int
     original_index: int
+    preserve_spaces: bool = True
     
     def __post_init__(self):
         """Validate WordToken after initialization."""
@@ -52,6 +54,8 @@ class WordToken:
             raise ValueError("trailing_spaces must be non-negative")
         if self.original_index < 0:
             raise ValueError("original_index must be non-negative")
+        if not isinstance(self.preserve_spaces, bool):
+            raise TypeError("preserve_spaces must be a boolean")
     
     @property
     def total_length(self) -> int:

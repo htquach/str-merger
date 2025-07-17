@@ -319,8 +319,7 @@ class PathReconstructor:
         Try strategic character interleaving while maintaining word boundaries.
         
         This strategy is conservative and only applies when it can maintain word integrity.
-        For now, it returns a high cost to prefer other strategies that better preserve
-        word boundaries as required by the design.
+        It respects the preserve_spaces flag to ensure word boundaries are maintained.
         
         Args:
             s1_token: Word token from first string
@@ -331,6 +330,14 @@ class PathReconstructor:
         """
         word1 = s1_token.word
         word2 = s2_token.word
+        
+        # If either token requires space preservation for word boundaries,
+        # we should not use character interleaving that might remove spaces
+        if s1_token.preserve_spaces or s2_token.preserve_spaces:
+            return {
+                'length': float('inf'),
+                'strategy': 'spaces_must_be_preserved'
+            }
         
         # Only apply character interleaving if words have significant character overlap
         # and the result would preserve word readability
@@ -448,6 +455,12 @@ class PathReconstructor:
         # Calculate spacing
         leading_spaces = max(s1_token.leading_spaces, s2_token.leading_spaces)
         trailing_spaces = max(s1_token.trailing_spaces, s2_token.trailing_spaces)
+        
+        # If spaces must be preserved for word boundaries, ensure we maintain proper spacing
+        if strategy == 'spaces_must_be_preserved' or s1_token.preserve_spaces or s2_token.preserve_spaces:
+            # Use basic concatenation with proper spacing to maintain word boundaries
+            inter_word_space = " "
+            return " " * leading_spaces + word1 + inter_word_space + word2 + " " * trailing_spaces
         
         if strategy == 'substring_containment_s1_contains_s2':
             # word1 contains word2, use word1
