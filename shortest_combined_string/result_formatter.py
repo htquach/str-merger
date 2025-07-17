@@ -8,6 +8,7 @@ and compression ratios.
 
 from typing import List
 from .models import CombinedToken, OptimizationMetrics, AlgorithmResult
+from .exceptions import FormattingError
 
 
 class ResultFormatter:
@@ -46,16 +47,16 @@ class ResultFormatter:
             ValueError: If token sequence is invalid
         """
         if not isinstance(tokens, list):
-            raise TypeError("tokens must be a list")
+            raise FormattingError("tokens must be a list")
         if not isinstance(original_s1, str):
-            raise TypeError("original_s1 must be a string")
+            raise FormattingError("original_s1 must be a string")
         if not isinstance(original_s2, str):
-            raise TypeError("original_s2 must be a string")
+            raise FormattingError("original_s2 must be a string")
         
         # Validate token types
         for i, token in enumerate(tokens):
             if not isinstance(token, CombinedToken):
-                raise TypeError(f"Token at index {i} must be a CombinedToken object")
+                raise FormattingError(f"Token at index {i} must be a CombinedToken object")
         
         # Set defaults for optional parameters
         if validation_errors is None:
@@ -64,9 +65,9 @@ class ResultFormatter:
             processing_warnings = []
         
         if not isinstance(validation_errors, list):
-            raise TypeError("validation_errors must be a list")
+            raise FormattingError("validation_errors must be a list")
         if not isinstance(processing_warnings, list):
-            raise TypeError("processing_warnings must be a list")
+            raise FormattingError("processing_warnings must be a list")
         
         # Assemble the output string from tokens
         combined_string = self._assemble_output_string(tokens)
@@ -171,10 +172,10 @@ class ResultFormatter:
             Formatted string summary of metrics
             
         Raises:
-            TypeError: If metrics is not an OptimizationMetrics object
+            FormattingError: If metrics is not an OptimizationMetrics object
         """
         if not isinstance(metrics, OptimizationMetrics):
-            raise TypeError("metrics must be an OptimizationMetrics object")
+            raise FormattingError("metrics must be an OptimizationMetrics instance")
         
         summary_lines = [
             f"Original lengths: s1={metrics.original_s1_length}, s2={metrics.original_s2_length}",

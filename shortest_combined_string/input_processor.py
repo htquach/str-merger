@@ -6,8 +6,9 @@ and generates appropriate warnings for preprocessing operations.
 """
 
 import re
-from typing import List
+from typing import List, Tuple
 from .models import PreprocessedInput
+from .exceptions import InputValidationError
 
 
 class InputProcessor:
@@ -43,10 +44,13 @@ class InputProcessor:
         """
         # Input validation
         if s1 is None or s2 is None:
-            raise ValueError("Input strings cannot be None")
+            raise InputValidationError("Input strings cannot be None")
         
-        if not isinstance(s1, str) or not isinstance(s2, str):
-            raise TypeError("Both inputs must be strings")
+        if not isinstance(s1, str):
+            raise InputValidationError(f"First input must be a string, got {type(s1).__name__}")
+            
+        if not isinstance(s2, str):
+            raise InputValidationError(f"Second input must be a string, got {type(s2).__name__}")
         
         warnings = []
         has_consecutive_spaces = False
@@ -132,8 +136,11 @@ class InputProcessor:
             
         Returns:
             str: String with consecutive spaces normalized
+            
+        Raises:
+            InputValidationError: If input_str is not a string
         """
         if not isinstance(input_str, str):
-            raise TypeError("Input must be a string")
+            raise InputValidationError(f"Input must be a string, got {type(input_str).__name__}")
         
         return self._consecutive_spaces_pattern.sub(' ', input_str)

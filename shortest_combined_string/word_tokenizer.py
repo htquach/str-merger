@@ -8,6 +8,7 @@ while preserving space metadata for optimal character reuse and reconstruction.
 import re
 from typing import List
 from .models import WordToken
+from .exceptions import TokenizationError
 
 
 class WordTokenizer:
@@ -30,10 +31,10 @@ class WordTokenizer:
             List of WordToken objects with space information preserved
             
         Raises:
-            TypeError: If input_str is not a string
+            TokenizationError: If input_str is not a string
         """
         if not isinstance(input_str, str):
-            raise TypeError("input_str must be a string")
+            raise TokenizationError(f"Input must be a string, got {type(input_str).__name__}")
         
         if not input_str:
             return []
@@ -93,19 +94,19 @@ class WordTokenizer:
             Reconstructed string with original spacing preserved
             
         Raises:
-            TypeError: If tokens is not a list or contains non-WordToken objects
+            TokenizationError: If tokens is not a list or contains non-WordToken objects
         """
         if not isinstance(tokens, list):
-            raise TypeError("tokens must be a list")
+            raise TokenizationError(f"Tokens must be a list, got {type(tokens).__name__}")
         
         if not tokens:
             return ""
         
         result_parts = []
         
-        for token in tokens:
+        for i, token in enumerate(tokens):
             if not isinstance(token, WordToken):
-                raise TypeError("All tokens must be WordToken objects")
+                raise TokenizationError(f"Token at index {i} must be a WordToken object, got {type(token).__name__}")
             
             # Add leading spaces
             result_parts.append(" " * token.leading_spaces)

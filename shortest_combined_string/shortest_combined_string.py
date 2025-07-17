@@ -14,6 +14,7 @@ from .path_reconstructor import PathReconstructor
 from .result_formatter import ResultFormatter
 from .subsequence_verifier import SubsequenceVerifier
 from .models import AlgorithmResult, CombinedToken, TokenType
+from .exceptions import ShortestCombinedStringError, InputValidationError
 
 
 class ShortestCombinedString:
@@ -294,7 +295,7 @@ class ShortestCombinedString:
                 combined_string = s1 + s2
         else:
             # This shouldn't happen if _is_edge_case is correct
-            raise ValueError("Unexpected edge case condition")
+            raise ShortestCombinedStringError("Unexpected edge case condition")
         
         # Create tokens for the result formatter
         tokens = []

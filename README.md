@@ -42,6 +42,7 @@ This algorithm takes two input sentences and produces an optimized combined stri
 - **Edge case handling**: Graceful handling of empty strings, identical inputs, and boundary cases
 - **Optimization metrics**: Detailed statistics on space savings achieved
 - **Robust data models**: Type-safe data structures with validation
+- **Comprehensive error handling**: Custom exception hierarchy with detailed error messages
 
 ## Installation
 
@@ -218,6 +219,51 @@ The algorithm gracefully handles various edge cases with optimized solutions:
 
 These edge case optimizations are implemented with dedicated detection and handling logic, ensuring efficient processing without invoking the more complex dynamic programming algorithm when a simpler solution exists.
 
+## Error Handling and Validation
+
+The algorithm implements a comprehensive error handling system with a custom exception hierarchy:
+
+- **Custom Exception Hierarchy**: A structured hierarchy of exceptions for different error types:
+  - `ShortestCombinedStringError`: Base exception for all algorithm errors
+  - `InputValidationError`: For input validation failures
+  - `TokenizationError`: For errors during word tokenization
+  - `DPSolverError`: For errors in the dynamic programming solver
+  - `PathReconstructionError`: For errors during solution path reconstruction
+  - `FormattingError`: For errors during result formatting
+  - `VerificationError`: For errors during subsequence verification
+
+- **Detailed Error Messages**: All exceptions include descriptive error messages with context about what went wrong, including the specific input that caused the error and its type.
+
+- **Robust Input Validation**: Comprehensive validation at each step of the algorithm:
+  - Type checking for all inputs (ensuring strings, lists, etc. are of the correct type)
+  - Value validation (checking for None values, negative numbers, etc.)
+  - Structural validation (ensuring data structures have the expected format)
+
+- **Graceful Error Recovery**: When possible, the algorithm attempts to recover from errors or provides clear guidance on how to fix the issue.
+
+- **Comprehensive Test Suite**: A dedicated test suite specifically for error handling ensures all error paths are properly tested and validated.
+
+Example of error handling in action:
+
+```python
+from shortest_combined_string import ShortestCombinedString
+from shortest_combined_string.exceptions import InputValidationError
+
+algorithm = ShortestCombinedString()
+
+try:
+    result = algorithm.combine(None, "test string")
+except InputValidationError as e:
+    print(f"Validation error: {e}")
+    # Output: Validation error: Input strings cannot be None
+
+try:
+    result = algorithm.combine(123, "test string")
+except InputValidationError as e:
+    print(f"Validation error: {e}")
+    # Output: Validation error: First input must be a string, got int
+```
+
 
 
 ## Testing
@@ -251,7 +297,7 @@ python -m pytest tests/test_models.py -v
 - ✅ Result formatting with optimization metrics calculation
 - ✅ Comprehensive test suite for primary test case
 - ✅ Edge case handling and tests
-- ⏳ Error handling and validation throughout (planned)
+- ✅ Error handling and validation throughout
 - ⏳ CLI interface (planned)
 
 ## Requirements

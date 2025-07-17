@@ -8,6 +8,7 @@ reporting for validation failures.
 
 from typing import List, Tuple, Optional
 from dataclasses import dataclass
+from .exceptions import VerificationError
 
 
 @dataclass
@@ -74,11 +75,17 @@ class SubsequenceVerifier:
         """
         # Input validation
         if not isinstance(s1, str):
-            raise TypeError("s1 must be a string")
+            raise VerificationError(f"First input must be a string, got {type(s1).__name__}")
         if not isinstance(s2, str):
-            raise TypeError("s2 must be a string")
+            raise VerificationError(f"Second input must be a string, got {type(s2).__name__}")
         if not isinstance(output, str):
-            raise TypeError("output must be a string")
+            raise VerificationError(f"Output must be a string, got {type(output).__name__}")
+        if s1 is None:
+            raise VerificationError("First input string cannot be None")
+        if s2 is None:
+            raise VerificationError("Second input string cannot be None")
+        if output is None:
+            raise VerificationError("Output string cannot be None")
         
         # Verify each input as a subsequence
         s1_match = self._verify_subsequence(s1, output, "s1")

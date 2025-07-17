@@ -7,6 +7,7 @@ from the DP table using backtracking algorithm to find the optimal character com
 
 from typing import List
 from .models import WordToken, DPState, Operation, CombinedToken, TokenType
+from .exceptions import PathReconstructionError
 
 
 class PathReconstructor:
@@ -42,35 +43,35 @@ class PathReconstructor:
             ValueError: If DP table dimensions don't match token lists
         """
         if not isinstance(dp_table, list):
-            raise TypeError("dp_table must be a list")
+            raise PathReconstructionError("dp_table must be a list")
         if not isinstance(s1_tokens, list):
-            raise TypeError("s1_tokens must be a list")
+            raise PathReconstructionError("s1_tokens must be a list")
         if not isinstance(s2_tokens, list):
-            raise TypeError("s2_tokens must be a list")
+            raise PathReconstructionError("s2_tokens must be a list")
         
         # Validate DP table structure
         if len(dp_table) != len(s1_tokens) + 1:
-            raise ValueError(f"DP table rows ({len(dp_table)}) must equal s1_tokens length + 1 ({len(s1_tokens) + 1})")
+            raise PathReconstructionError(f"DP table rows ({len(dp_table)}) must equal s1_tokens length + 1 ({len(s1_tokens) + 1})")
         
         if dp_table and len(dp_table[0]) != len(s2_tokens) + 1:
-            raise ValueError(f"DP table columns ({len(dp_table[0])}) must equal s2_tokens length + 1 ({len(s2_tokens) + 1})")
+            raise PathReconstructionError(f"DP table columns ({len(dp_table[0])}) must equal s2_tokens length + 1 ({len(s2_tokens) + 1})")
         
         # Validate token types
-        for token in s1_tokens:
+        for i, token in enumerate(s1_tokens):
             if not isinstance(token, WordToken):
-                raise TypeError("All s1_tokens must be WordToken objects")
+                raise PathReconstructionError(f"Token at index {i} in first token list must be a WordToken object, got {type(token).__name__}")
         
-        for token in s2_tokens:
+        for i, token in enumerate(s2_tokens):
             if not isinstance(token, WordToken):
-                raise TypeError("All s2_tokens must be WordToken objects")
+                raise PathReconstructionError(f"Token at index {i} in second token list must be a WordToken object, got {type(token).__name__}")
         
         # Validate DP table contents
         for i, row in enumerate(dp_table):
             if not isinstance(row, list):
-                raise TypeError(f"DP table row {i} must be a list")
+                raise PathReconstructionError(f"DP table row {i} must be a list")
             for j, state in enumerate(row):
                 if not isinstance(state, DPState):
-                    raise TypeError(f"DP table entry [{i}][{j}] must be a DPState object")
+                    raise PathReconstructionError(f"DP table entry [{i}][{j}] must be a DPState object, got {type(state).__name__}")
         
         solution = []
         i = len(s1_tokens)

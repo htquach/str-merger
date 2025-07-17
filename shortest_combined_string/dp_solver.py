@@ -9,6 +9,7 @@ subsequence relationships.
 from typing import List, Optional
 from .models import WordToken, DPState, Operation, CombinedToken, TokenType
 from .path_reconstructor import PathReconstructor
+from .exceptions import DPSolverError
 
 
 class DPResult:
@@ -51,20 +52,20 @@ class DPSolver:
             DPResult containing the optimal solution
             
         Raises:
-            TypeError: If inputs are not lists of WordToken objects
+            DPSolverError: If inputs are not lists of WordToken objects or are invalid
         """
         if not isinstance(s1_tokens, list):
-            raise TypeError("s1_tokens must be a list")
+            raise DPSolverError(f"First token list must be a list, got {type(s1_tokens).__name__}")
         if not isinstance(s2_tokens, list):
-            raise TypeError("s2_tokens must be a list")
+            raise DPSolverError(f"Second token list must be a list, got {type(s2_tokens).__name__}")
         
-        for token in s1_tokens:
+        for i, token in enumerate(s1_tokens):
             if not isinstance(token, WordToken):
-                raise TypeError("All s1_tokens must be WordToken objects")
+                raise DPSolverError(f"Token at index {i} in first token list must be a WordToken object, got {type(token).__name__}")
         
-        for token in s2_tokens:
+        for i, token in enumerate(s2_tokens):
             if not isinstance(token, WordToken):
-                raise TypeError("All s2_tokens must be WordToken objects")
+                raise DPSolverError(f"Token at index {i} in second token list must be a WordToken object, got {type(token).__name__}")
         
         # Initialize DP table
         dp_table = self._initialize_dp_table(s1_tokens, s2_tokens)
