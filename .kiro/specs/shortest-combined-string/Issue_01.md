@@ -1,4 +1,8 @@
-# Evaluation of Shortest Combined String Algorithm
+# Issue-01: Evaluation of Shortest Combined String Algorithm
+
+## Status
+
+Open
 
 ## Issue Identification
 
