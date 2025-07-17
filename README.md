@@ -59,6 +59,38 @@ python -m pytest
 
 ## Usage
 
+### Simple Usage with Main Orchestrator
+
+```python
+from shortest_combined_string import ShortestCombinedString
+
+# Create the algorithm orchestrator
+algorithm = ShortestCombinedString()
+
+# Process two strings
+s1 = "this is a red vase"
+s2 = "his son freddy love vase"
+result = algorithm.combine(s1, s2)
+
+# Display the result
+print(f"Combined string: '{result.combined_string}'")
+print(f"Is valid: {result.is_valid}")
+print(f"Original lengths: s1={result.metrics.original_s1_length}, s2={result.metrics.original_s2_length}")
+print(f"Combined length: {result.metrics.combined_length}")
+print(f"Total savings: {result.metrics.total_savings} characters")
+print(f"Compression ratio: {result.metrics.compression_ratio:.3f}")
+
+# Example output:
+# Combined string: 'this is son freddy love a red vase'
+# Is valid: True
+# Original lengths: s1=18, s2=24
+# Combined length: 31
+# Total savings: 11 characters
+# Compression ratio: 0.738
+```
+
+### Advanced Usage with Individual Components
+
 ```python
 from shortest_combined_string import (
     InputProcessor, WordTokenizer, SubsequenceVerifier, DPSolver, 
@@ -244,6 +276,7 @@ shortest_combined_string/
 ├── dp_solver.py             # Dynamic programming algorithm implementation
 ├── path_reconstructor.py    # Optimal path reconstruction with backtracking
 ├── result_formatter.py      # Result formatting and metrics calculation
+├── shortest_combined_string.py # Main algorithm orchestrator
 └── cli.py                   # Command-line interface (planned)
 ```
 

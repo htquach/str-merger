@@ -35,6 +35,7 @@ This feature implements a Python algorithm to find the shortest possible combine
 1. WHEN common characters exist between input strings THEN the algorithm SHALL maximize character reuse without violating subsequence requirements
 2. WHEN characters can be shared strategically THEN the algorithm SHALL prioritize sharing over duplication
 3. WHEN spaces exist in input strings THEN they SHALL be handled strategically for optimal alignment
+4. WHEN matching characters between input strings THEN a word or character from one string SHALL be allowed to match with a space from another string (e.g., for s1="aa bb" and s2="cc", a valid result could be "aaccbb" where the space in s1 is matched with "cc" from s2)
 
 ### Requirement 4: Word Integrity and Space Handling
 

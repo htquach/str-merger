@@ -149,7 +149,8 @@ Each DP transition must ensure:
 Within word transitions, the algorithm considers:
 - **Prefix/Suffix Overlap**: When one word ends with characters that start another
 - **Substring Containment**: When one word contains another as a substring
-- **Character Interleaving**: Strategic character sharing while maintaining word boundaries.  Be careful not to insert space within a word, because insert space within a word is effectively breaking it into two words.
+- **Character Interleaving**: Strategic character sharing while maintaining word boundaries. Be careful not to insert space within a word, because insert space within a word is effectively breaking it into two words.
+- **Space Matching**: Words or characters from one string can be matched with spaces from another string. For example, with s1="aa bb" and s2="cc", the algorithm can produce "aaccbb" by matching the space in s1 with "cc" from s2.
 
 ## Data Models
 

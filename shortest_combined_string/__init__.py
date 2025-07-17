@@ -22,6 +22,7 @@ from .subsequence_verifier import SubsequenceVerifier, VerificationResult, Subse
 from .dp_solver import DPSolver, DPResult
 from .path_reconstructor import PathReconstructor
 from .result_formatter import ResultFormatter
+from .shortest_combined_string import ShortestCombinedString
 
 __version__ = "1.0.0"
 __all__ = [
@@ -41,5 +42,6 @@ __all__ = [
     "DPSolver",
     "DPResult",
     "PathReconstructor",
-    "ResultFormatter"
+    "ResultFormatter",
+    "ShortestCombinedString"
 ]
