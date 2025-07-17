@@ -90,7 +90,8 @@ class ResultFormatter:
         Assemble the final output string from CombinedToken sequence.
         
         Concatenates all token content and applies leading/trailing space trimming
-        to the final result as specified in the requirements.
+        to the final result as specified in the requirements, except for whitespace-only
+        strings which are preserved as-is.
         
         Args:
             tokens: Sequence of CombinedToken objects
@@ -109,7 +110,11 @@ class ResultFormatter:
         # Join all parts
         combined = ''.join(result_parts)
         
-        # Trim leading and trailing spaces as required
+        # Special case: if the combined string contains only whitespace, preserve it
+        if combined and combined.isspace():
+            return combined
+            
+        # Trim leading and trailing spaces as required for normal strings
         trimmed = combined.strip()
         
         return trimmed

@@ -249,7 +249,8 @@ class TestResultFormatter:
         ]
         
         result = self.formatter._assemble_output_string(tokens)
-        assert result == ""  # All spaces should be trimmed
+        # With our updated behavior, whitespace-only strings are preserved
+        assert result == "   "  # Spaces are preserved for whitespace-only strings
     
     def test_calculate_metrics_basic(self):
         """Test basic metrics calculation."""
