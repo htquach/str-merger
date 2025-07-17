@@ -60,6 +60,45 @@ python -m pytest
 
 ## Usage
 
+### Command-Line Interface
+
+The package includes a command-line interface for easy access to the algorithm:
+
+```bash
+# Basic usage
+python -m shortest_combined_string.cli "this is a red vase" "his son freddy love vase"
+
+# Disable colored output
+python -m shortest_combined_string.cli --no-color "hello world" "world test"
+
+# Quote strings in the output for clarity
+python -m shortest_combined_string.cli --quote "to be or not to be" "that is the question"
+```
+
+The CLI provides a formatted output with:
+- Input string information
+- Combined result with validation status
+- Optimization metrics (original lengths, combined length, savings, compression ratio)
+- Any processing warnings or validation errors
+
+Example output:
+```
+=== Shortest Combined String Result ===
+
+Input String 1: ******************
+Input String 2: ************************
+Actual Input 1: this is a red vase
+Actual Input 2: his son freddy love vase
+
+Result: this isasonfreddylovevase [VALID]
+
+Optimization Metrics:
+  Original lengths: s1=18, s2=24
+  Combined length: 25
+  Total savings: 17 characters
+  Compression ratio: 0.595
+```
+
 ### Simple Usage with Main Orchestrator
 
 ```python
@@ -298,7 +337,7 @@ python -m pytest tests/test_models.py -v
 - ✅ Comprehensive test suite for primary test case
 - ✅ Edge case handling and tests
 - ✅ Error handling and validation throughout
-- ⏳ CLI interface (planned)
+- ✅ CLI interface with colored output and metrics display
 
 ## Requirements
 
@@ -333,7 +372,7 @@ shortest_combined_string/
 ├── path_reconstructor.py    # Optimal path reconstruction with backtracking
 ├── result_formatter.py      # Result formatting and metrics calculation
 ├── shortest_combined_string.py # Main algorithm orchestrator
-└── cli.py                   # Command-line interface (planned)
+└── cli.py                   # Command-line interface
 ```
 
 ## Performance
