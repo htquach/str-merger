@@ -20,6 +20,8 @@ from .input_processor import InputProcessor
 from .word_tokenizer import WordTokenizer
 from .subsequence_verifier import SubsequenceVerifier, VerificationResult, SubsequenceMatch
 from .dp_solver import DPSolver, DPResult
+from .path_reconstructor import PathReconstructor
+from .result_formatter import ResultFormatter
 
 __version__ = "1.0.0"
 __all__ = [
@@ -37,5 +39,7 @@ __all__ = [
     "VerificationResult",
     "SubsequenceMatch",
     "DPSolver",
-    "DPResult"
+    "DPResult",
+    "PathReconstructor",
+    "ResultFormatter"
 ]

@@ -71,7 +71,9 @@
   - Upate README and commit the changes
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [-] 7. Implement optimal path reconstruction
+- [x] 7. Implement optimal path reconstruction
+
+
 
 
 
@@ -82,7 +84,10 @@
   - Upate README and commit the changes
   - _Requirements: 2.3, 5.1_
 
-- [ ] 8. Implement ResultFormatter and metrics calculation
+- [-] 8. Implement ResultFormatter and metrics calculation
+
+
+
   - Create ResultFormatter that assembles final output string from CombinedToken sequence
   - Implement OptimizationMetrics calculation (savings, compression ratio)
   - Add leading/trailing space trimming to final output

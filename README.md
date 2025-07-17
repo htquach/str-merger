@@ -61,7 +61,8 @@ python -m pytest
 
 ```python
 from shortest_combined_string import (
-    InputProcessor, WordTokenizer, SubsequenceVerifier, DPSolver
+    InputProcessor, WordTokenizer, SubsequenceVerifier, DPSolver, 
+    PathReconstructor, ResultFormatter
 )
 
 # Input preprocessing with validation
@@ -96,27 +97,50 @@ dp_result = solver.solve(tokens1, tokens2)
 print(f"Optimal length: {dp_result.optimal_length}")
 print(f"Solution tokens: {len(dp_result.solution)}")
 
-# Reconstruct the combined string from solution
-combined_parts = []
-for token in dp_result.solution:
-    combined_parts.append(token.content)
+# Path reconstruction to get the optimal solution tokens
+reconstructor = PathReconstructor()
+solution_tokens = reconstructor.reconstruct_path(dp_result.dp_table, tokens1, tokens2)
+
+print(f"Solution tokens: {len(solution_tokens)}")
+for token in solution_tokens:
     print(f"Token: '{token.content}' (Type: {token.type.value})")
 
-combined_string = "".join(combined_parts)
-print(f"Combined result: '{combined_string}'")
-
 # Example output:
-# Optimal length: 16
 # Solution tokens: 3
 # Token: 'hello ' (Type: S1_ONLY)
 # Token: 'world test' (Type: MERGED)
+
+# Format the final result with metrics and validation
+formatter = ResultFormatter()
+algorithm_result = formatter.format_result(
+    solution_tokens, 
+    "hello world", 
+    "world test",
+    processing_warnings=result.warnings
+)
+
+print(f"Combined result: '{algorithm_result.combined_string}'")
+print(f"Result is valid: {algorithm_result.is_valid}")
+
+# Display optimization metrics
+print("\nOptimization Metrics:")
+print(formatter.format_metrics_summary(algorithm_result.metrics))
+
+# Example output:
 # Combined result: 'hello world test'
+# Result is valid: True
+# 
+# Optimization Metrics:
+# Original lengths: s1=11, s2=10
+# Combined length: 16
+# Total savings: 5 characters
+# Compression ratio: 0.762
 
 # Output validation with subsequence verification
 verifier = SubsequenceVerifier()
 s1 = "hello world"
 s2 = "world test"
-output = combined_string
+output = algorithm_result.combined_string
 
 verification = verifier.verify(s1, s2, output)
 print(f"Valid output: {verification.is_valid}")
@@ -185,6 +209,7 @@ python -m pytest tests/test_models.py -v
 - ✅ Dynamic programming algorithm with basic optimization
 - ✅ Advanced character reuse optimizations (substring containment, prefix/suffix overlap, character interleaving)
 - ✅ Optimal path reconstruction with backtracking algorithm
+- ✅ Result formatting with optimization metrics calculation
 - ⏳ CLI interface (planned)
 
 ## Requirements
@@ -218,6 +243,7 @@ shortest_combined_string/
 ├── subsequence_verifier.py  # Output validation and verification
 ├── dp_solver.py             # Dynamic programming algorithm implementation
 ├── path_reconstructor.py    # Optimal path reconstruction with backtracking
+├── result_formatter.py      # Result formatting and metrics calculation
 └── cli.py                   # Command-line interface (planned)
 ```
 
