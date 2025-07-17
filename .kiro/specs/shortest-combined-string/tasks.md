@@ -66,7 +66,8 @@
   - Upate README and commit the changes
   - _Requirements: 5.1, 7.1, 7.2, 7.3_
 
-- [ ] 10. Implement comprehensive test suite for primary test case
+- [x] 10. Implement comprehensive test suite for primary test case
+
   - Create test specifically for s1="this is a red vase", s2="his son freddy love vase"
   - Verify output length ≤ 26 characters
   - Validate subsequence preservation and word integrity
@@ -81,7 +82,8 @@
   - Add handling for empty strings (empty strings are always valid subsequences of any output)
   - Add handling for single character inputs and boundary cases
   - Write comprehensive edge case test suite including empty string validation
-  - Upate README and commit the changes
+  - Upate README
+  - Commit the changes
   - _Requirements: 7.3, 7.5, 7.6, 8.2, 8.3, 8.4_
 
 - [ ] 12. Add error handling and validation throughout
